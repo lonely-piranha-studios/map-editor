@@ -1,0 +1,20 @@
+.map {
+  margin: 10px;
+  padding: 10px;
+  background-color: #eff8ff;
+
+  &:nth-child(2n) {
+    background-color: #e1f0fb;
+  }
+
+  .delete {
+    float: right;
+    background-color: red;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+  }
+}

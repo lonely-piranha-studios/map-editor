@@ -1,0 +1,12 @@
+{
+  "name": "project",
+  "type": "node",
+  "cache": [
+    "master",
+    "develop"
+  ],
+  "cached": [
+    "node_modules",
+    "bower_components"
+  ]
+}

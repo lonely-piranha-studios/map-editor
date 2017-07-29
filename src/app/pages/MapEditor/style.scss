@@ -1,0 +1,57 @@
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.map {
+  position: relative;
+}
+
+.block {
+  position: absolute;
+  display: block;
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+
+  &.active {
+    border: 2px solid blue;
+
+    .tile {
+      line-height: 60px;
+    }
+  }
+
+  .tile {
+    font-size: 25px;
+    line-height: 64px;
+    text-align: center;
+  }
+
+  &.solid {
+    box-shadow: 0 0 5px 2px red inset;
+  }
+}
+
+.block_0 {
+  background-color: black;
+}
+
+.block_1 {
+  background-color: grey;
+}
+
+.hints {
+  float: right;
+  vertical-align: top;
+  margin-right: 10px;
+  padding: 10px;
+  border: 1px solid grey;
+
+  b {
+    display: inline-block;
+    font-weight: bold;
+    min-width: 50px;
+  }
+}

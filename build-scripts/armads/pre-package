@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+ENV=${ENV:-"production"} # default environment
+
+# Remove dev dependencies in production.
+
+# we don't want to do this before the armads caching
+if [[ $ENV = "production" && -f "./package.json" ]]; then
+  echo "Removing npm dev dependencies..."
+  if [[ -f yarn.lock ]]; then
+    echo "Running yarn prune..."
+    # TODO --no-color
+    #time yarn install --production --no-emoji --no-progress
+  else
+    echo "Running npm prune..."
+    time npm prune --production --color false
+  fi
+fi

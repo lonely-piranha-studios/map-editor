@@ -1,0 +1,49 @@
+$theme: (
+  "colors": (
+    "black": #4a4a4a,
+    "white": #ffffff,
+    "white-dark": darken(#ffffff, 20%),
+    "white-light": lighten(#ffffff, 40%),
+    "magenta": #cc3c8e,
+    "magenta-dark": darken(#cc3c8e, 20%),
+    "magenta-light": lighten(#cc3c8e, 40%),
+    "blue": #48a1ce,
+    "blue-dark": darken(#48a1ce, 20%),
+    "blue-light": #ecf5fa,
+    "facebook": #3b5998,
+    "linkedin": #0077b5
+  ),
+  "fonts": (
+    "main": ("Roboto", "Helvetica", "Arial", sans-serif),
+    "sizes":(
+      "small": 12px,
+      "medium": 14px,
+      "large": 18px,
+      "extra": 30px,
+    )
+  ),
+  "screens": (
+  	"mobile": 600px,
+  	"tablet": 1000px,
+    "max-width": 1200px
+  )
+);
+
+// Helper for accessing theme
+@function theme($keys...) {
+  $map: $theme;
+  @each $key in $keys {
+    $map: map-get($map, $key);
+  }
+
+  @return $map;
+}
+
+// React toolbox config
+$unit: 0.625rem !default;
+$color-primary: theme('colors', 'magenta') !default;
+$color-primary-dark: theme('colors', 'magenta-dark') !default;
+$color-primary-contrast: theme('colors', 'white') !default;
+$color-accent: theme('colors', 'blue') !default;
+$color-accent-dark: theme('colors', 'blue-dark') !default;
+$color-accent-contrast: theme('colors', 'white') !default;

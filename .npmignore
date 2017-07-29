@@ -1,0 +1,10 @@
+# Node.js
+node_modules/
+npm-debug.log*
+.npm
+.node_repl_history
+build/
+public/
+.DS_Store
+**/.DS_Store
+**/*/.DS_Store

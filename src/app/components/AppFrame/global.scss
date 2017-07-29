@@ -1,0 +1,8 @@
+:global {
+  body {
+    color: theme('colors', 'black');
+    font-size: theme('fonts', 'sizes', 'medium');
+    font-family: theme('fonts', 'main');
+    line-height: 1.4;
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "project",
+  "script": "build/server/index.js",
+  "exec_mode": "fork",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

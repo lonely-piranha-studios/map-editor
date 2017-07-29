@@ -1,0 +1,57 @@
+@import 'reset';
+@import 'global';
+@import 'fonts';
+
+$menuHeight: 60px;
+$footerHeight: 150px;
+
+.container {
+  background-color: #eee;
+  height: 100%;
+  width: 100%;
+
+  .menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $menuHeight;
+    padding: 10px;
+    background-color: theme('colors', 'blue');
+    color: #fff;
+
+    a {// Menu links
+      color: #fff;
+      margin-right: 20px;
+    }
+
+    button {//Language buttons
+      float: right;
+      border: 1px solid #000;
+      background-color: #fff;
+
+      &.active {
+        background-color: theme('colors', 'magenta');
+      }
+    }
+  }
+
+  .content {
+    width: calc(100% - 20px);
+    max-width: theme('screens', 'max-width');
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    margin-top: $menuHeight;
+    min-height: calc(100vh - #{$menuHeight} - #{$footerHeight});
+    background-color: #fff;
+    overflow: auto;
+  }
+
+  .footer {
+    width: 100%;
+    height: $footerHeight;
+    background-color: theme('colors', 'black');
+    color: #fff;
+  }
+}

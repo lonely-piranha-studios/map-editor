@@ -1,0 +1,35 @@
+{
+  "extends": "@ispy",
+  "parser": "babel-eslint",
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack.config.dev.js"
+      }
+    }
+  },
+  "globals": {
+    "config_default": true,
+    "describe": true,
+    "it": true,
+    "fetch": true,
+    "window": true,
+    "document": true,
+    "CONFIG": true,
+    "CONFIG_SERVER": true,
+  },
+  "rules": {
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js"
+        ]
+      }
+    ],
+    "comma-dangle": 0,
+    "jsx-a11y/img-has-alt": 1,
+    "react/prop-types": 0,
+    "no-confusing-arrow": 0
+  }
+}
