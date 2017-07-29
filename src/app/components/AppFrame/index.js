@@ -8,7 +8,8 @@ import style from './style.scss';
 
 const menuOptions = {
   '/': 'Overview',
-  '/map-new': 'New map'
+  '/map-new': 'New map',
+  '/generation': 'World generation',
 };
 
 class AppFrame extends React.Component {

@@ -13,6 +13,7 @@ class MapNew extends React.Component {
 
   newMap() {
     this.props.dispatch({ type: 'MAP_NEW', ...this.state });
+    this.setState({ name: '', width: 0, height: 0 });
   }
 
   render() {
