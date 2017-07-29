@@ -20,18 +20,19 @@ class Generation extends React.Component {
       entryRight: true,
     };
     this.availableEntries = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 200; i++) {
       this.rooms.push({
         id: uuid(),
         name: `map_${i}`,
         width: Math.floor(Math.random()*20 + 5),
         height: Math.floor(Math.random()*20 + 5),
-        entryTop: !!(Math.random() > 0.5),
-        entryBottom: !!(Math.random() > 0.5),
-        entryLeft: !!(Math.random() > 0.5),
-        entryRight: !!(Math.random() > 0.5),
+        entryTop: !!(Math.random() > 0.2),
+        entryBottom: !!(Math.random() > 0.2),
+        entryLeft: !!(Math.random() > 0.2),
+        entryRight: !!(Math.random() > 0.2),
       });
     }
+    // this.rooms = Object.values(props.game.maps);
     this.mapGenerate();
   }
 
@@ -75,19 +76,77 @@ class Generation extends React.Component {
     return false;
   }
 
-  entryFind(id, x, y) {
+  entryDirectionValidate(type, x, y) {
+    if (type === 'top' && y >= 0) { return false; }
+    if (type === 'bottom' && y <= 0) { return false; }
+    if (type === 'left' && x >= 0) { return false; }
+    if (type === 'right' && x <= 0) { return false; }
+    return true;
+  }
+
+  entryFind(type, x, y) {
     let maxDistance = 20; // max search distance
     let res = -1;
     for (let ind = 0; ind < this.availableEntries.length; ind++) {
-      if (this.availableEntries[ind].id !== id) {
-        const distance = Math.hypot(this.availableEntries[ind].x-x, this.availableEntries[ind].y-y);
-        if (distance < maxDistance) {
+      const distance = Math.hypot(this.availableEntries[ind].x-x, this.availableEntries[ind].y-y);
+      if (distance < maxDistance) {
+        if (this.entryDirectionValidate(type, this.availableEntries[ind].x-x, this.availableEntries[ind].y-y) && this.entryDirectionValidate(this.availableEntries[ind].type, x-this.availableEntries[ind].x, y-this.availableEntries[ind].y)) {
           maxDistance = distance;
           res = ind;
         }
       }
     }
     return res;
+  }
+
+  coridorDraw(x1, y1, x2, y2, type1, type2) {
+    const distanceW = Math.abs(x1 - x2);
+    const distanceH = Math.abs(y1 - y2);
+    const xMin = Math.min(x1, x2);
+    const yMin = Math.min(y1, y2);
+    let type = distanceW > distanceH ? 'horizontal' : 'vertical';
+    if (type1 === 'top' && type2 === 'bottom' || type2 === 'top' && type1 === 'bottom') { type = 'vertical'; }
+    if (type1 === 'left' && type2 === 'right' || type2 === 'left' && type1 === 'right') { type = 'horizontal'; }
+    if ((type1 === 'left' || type1 === 'right') && (type2 === 'top' || type2 === 'bottom')) { type = 'horizontal-bend'; }
+    if ((type1 === 'top' || type1 === 'bottom') && (type2 === 'left' || type2 === 'right')) { type = 'vertical-bend'; }
+    const color = '#00f';
+    let drawX = x1;
+    let drawY = y1;
+    for (let step = 0; step < distanceW + distanceH; step++) {
+      if (type === 'horizontal') {
+        if (step >= distanceW/2 && drawY !== y2) {
+          drawY += y1 > y2 ? -1 : 1;
+        } else {
+          drawX += x1 > x2 ? -1 : 1;
+        }
+      } else if (type === 'vertical') {
+        if (step >= distanceH/2 && drawX !== x2) {
+          drawX += x1 > x2 ? -1 : 1;
+        } else {
+          drawY += y1 > y2 ? -1 : 1;
+        }
+      } else if (type === 'horizontal-bend') {
+        if (step >= distanceW) {
+          drawY += y1 > y2 ? -1 : 1;
+        } else {
+          drawX += x1 > x2 ? -1 : 1;
+        }
+      } else if (type === 'vertical-bend') {
+        if (step >= distanceH) {
+          drawX += x1 > x2 ? -1 : 1;
+        } else {
+          drawY += y1 > y2 ? -1 : 1;
+        }
+      }
+      const innerArr = this.mapCollide[drawX];
+      if (!Array.isArray(innerArr)) {
+        this.mapCollide[drawX] = [];
+      }
+      this.mapCollide[drawX][drawY]
+        = color;
+    }
+    this.mapCollide[x1][y1] = '#00f';
+    this.mapCollide[x2][y2] = '#00f';
   }
 
   mapWrite(map, x, y) {
@@ -106,17 +165,37 @@ class Generation extends React.Component {
     }
     let entries = [];
     if (map.entryTop) {
-      const search = this.entryFind(map.id, 200 + x, 200 + y - mapYOrigo);
+      const search = this.entryFind('top', 200 + x, 200 + y - mapYOrigo);
       if (search >= 0) {
-        console.info('FOUND PARTNER');
-        this.mapCollide[200 + x][200 + y - mapYOrigo] = '#00f';
-      } else {
-        entries.push({ mapId: map.id, x: 200 + x, y: 200 + y - mapYOrigo });
+        this.coridorDraw(200 + x, 200 + y - mapYOrigo, this.availableEntries[search].x, this.availableEntries[search].y, 'top', this.availableEntries[search].type)
+        //this.availableEntries.splice(search, 1)
       }
+      entries.push({ type: 'top', x: 200 + x, y: 200 + y - mapYOrigo });
     }
-    if (map.entryBottom) { entries.push({ mapId: map.id, x: 200 + x, y: 200 + y - mapYOrigo + map.height - 1 }); }
-    if (map.entryLeft) { entries.push({ mapId: map.id, x: 200 + x - mapXOrigo, y: 200 + y }); }
-    if (map.entryRight) { entries.push({ mapId: map.id, x: 200 + x - mapXOrigo + map.width - 1, y: 200 + y }); }
+    if (map.entryBottom) {
+      const search = this.entryFind('bottom', 200 + x, 200 + y - mapYOrigo + map.height - 1);
+      if (search >= 0) {
+        this.coridorDraw(200 + x, 200 + y - mapYOrigo + map.height - 1, this.availableEntries[search].x, this.availableEntries[search].y, 'bottom', this.availableEntries[search].type)
+        //this.availableEntries.splice(search, 1)
+      }
+      entries.push({ type: 'bottom', x: 200 + x, y: 200 + y - mapYOrigo + map.height - 1 });
+    }
+    if (map.entryLeft) {
+      const search = this.entryFind('left', 200 + x - mapXOrigo, 200 + y);
+      if (search >= 0) {
+        this.coridorDraw(200 + x - mapXOrigo, 200 + y, this.availableEntries[search].x, this.availableEntries[search].y, 'left', this.availableEntries[search].type)
+        //this.availableEntries.splice(search, 1)
+      }
+      entries.push({ type: 'left', x: 200 + x - mapXOrigo, y: 200 + y });
+    }
+    if (map.entryRight) {
+      const search = this.entryFind('right', 200 + x - mapXOrigo + map.width - 1, 200 + y);
+      if (search >= 0) {
+        this.coridorDraw(200 + x - mapXOrigo + map.width - 1, 200 + y, this.availableEntries[search].x, this.availableEntries[search].y, 'right', this.availableEntries[search].type)
+        //this.availableEntries.splice(search, 1)
+      }
+      entries.push({ type: 'right', x: 200 + x - mapXOrigo + map.width - 1, y: 200 + y });
+    }
     this.availableEntries.push(...entries);
   }
 
@@ -128,7 +207,7 @@ class Generation extends React.Component {
           {this.mapCollide.map((v, x) => v.map((color, y) =>
             <div key={`${x}x${y}`} style={{ left: `${x}px`, top: `${y}px`, backgroundColor: color }} className={style.pixel} />
           ))}
-          {this.availableEntries.map((e, ind) => <div key={ind} style={{ left: `${e.x}px`, top: `${e.y}px`, backgroundColor: 'red' }} className={style.pixel} />)}
+          {/* this.availableEntries.map((e, ind) => <div key={ind} style={{ left: `${e.x}px`, top: `${e.y}px`, backgroundColor: 'red' }} className={style.pixel} />) */}
         </div>
       </div>
     );
