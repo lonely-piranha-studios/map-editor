@@ -34,12 +34,41 @@
   }
 }
 
+.object {
+  font-size: 0px;
+  position: absolute;
+  display: block;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0 0 5px black;
+  border: 1px solid #0f0;
+  background-color: rgba(0,255,0,0.2);
+  line-height: 0;
+
+  &:hover {
+    font-size: 12px;
+  }
+
+  &.active {
+    border-color: blue;
+    background-color: rgba(0,0,255,0.2);
+  }
+}
+
 .block_0 {
   background-color: black;
+  color: white;
 }
 
 .block_1 {
   background-color: grey;
+}
+
+.block_2 {
+  background-color: #55f;
+  color: white;
 }
 
 .hints {

@@ -23,6 +23,16 @@ export function mapNew(state, name, width, height) {
     }));
 }
 
+export function objectNew(state, map, x, y, type, data) {
+  return state
+    .updateIn(['maps', map, 'objects'], o => o.push(fromJS({ x, y, type, data })));
+}
+
+export function objectRemove(state, map, id) {
+  return state
+    .updateIn(['maps', map, 'objects'], o => o.delete(id));
+}
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
@@ -52,6 +62,12 @@ export default (state = INITIAL_STATE, action) => {
 
     case 'MAP_REMOVE':
       return state.deleteIn(['maps', action.id]);
+
+    case 'MAP_OBJECT_NEW':
+      return objectNew(state, action.map, action.x, action.y, action.objectType, action.data)
+
+    case 'MAP_OBJECT_REMOVE':
+      return objectRemove(state, action.map, action.id)
 
     default:
       return state;
