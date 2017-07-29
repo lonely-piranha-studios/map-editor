@@ -7,6 +7,7 @@ class Generation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.mapRadius = 300;
     this.mapCollide = [];
     this.rooms = [];
     this.spawn = {
@@ -32,7 +33,7 @@ class Generation extends React.Component {
         entryRight: !!(Math.random() > 0.2),
       });
     }
-    // this.rooms = Object.values(props.game.maps);
+    //this.rooms = Object.values(props.game.maps);
     this.mapGenerate();
   }
 
@@ -41,7 +42,6 @@ class Generation extends React.Component {
     this.generationDistance = 10;
     this.mapWrite(this.spawn, 0, 0);
     for (let ind = 0; ind < this.rooms.length; ind++) {
-      this.generationRotation = 0;
       let success = false;
       while(!success) {
         const newX = Math.floor(this.generationDistance * Math.cos(this.generationRotation));
@@ -50,7 +50,7 @@ class Generation extends React.Component {
           this.mapWrite(this.rooms[ind], newX, newY);
           success = true;
         } else {
-          this.generationRotation += 450 / this.generationDistance;
+          this.generationRotation += 450 / (10 + this.generationDistance / 2) + Math.random() * 5;
           if (this.generationRotation >= 360) {
             this.generationRotation -= 360;
             this.generationDistance += 5;
@@ -67,8 +67,8 @@ class Generation extends React.Component {
     const mapHeight = map.height + 6;
     const tot = mapWidth * mapHeight;
     for (let ind = 0; ind < tot; ind++) {
-      const xPos = 200 + x - 3 - mapXOrigo + (ind - Math.floor(ind/mapWidth) * mapWidth);
-      const yPos = 200 + y - 3 - mapYOrigo + Math.floor(ind/mapWidth);
+      const xPos = this.mapRadius + x - 3 - mapXOrigo + (ind - Math.floor(ind/mapWidth) * mapWidth);
+      const yPos = this.mapRadius + y - 3 - mapYOrigo + Math.floor(ind/mapWidth);
       if (this.mapCollide[xPos] && this.mapCollide[xPos][yPos]) {
         return true;
       }
@@ -154,8 +154,8 @@ class Generation extends React.Component {
     const mapYOrigo = Math.floor(map.height/2);
     const color = '#afa';
     for (let ind = 0; ind < map.width*map.height; ind++) {
-      const xPos = 200 + x - mapXOrigo + (ind - Math.floor(ind/map.width) * map.width);
-      const yPos = 200 + y - mapYOrigo + Math.floor(ind/map.width);
+      const xPos = this.mapRadius + x - mapXOrigo + (ind - Math.floor(ind/map.width) * map.width);
+      const yPos = this.mapRadius + y - mapYOrigo + Math.floor(ind/map.width);
       const innerArr = this.mapCollide[xPos];
       if (!Array.isArray(innerArr)) {
         this.mapCollide[xPos] = [];
@@ -165,36 +165,36 @@ class Generation extends React.Component {
     }
     let entries = [];
     if (map.entryTop) {
-      const search = this.entryFind('top', 200 + x, 200 + y - mapYOrigo);
+      const search = this.entryFind('top', this.mapRadius + x, this.mapRadius + y - mapYOrigo);
       if (search >= 0) {
-        this.coridorDraw(200 + x, 200 + y - mapYOrigo, this.availableEntries[search].x, this.availableEntries[search].y, 'top', this.availableEntries[search].type)
+        this.coridorDraw(this.mapRadius + x, this.mapRadius + y - mapYOrigo, this.availableEntries[search].x, this.availableEntries[search].y, 'top', this.availableEntries[search].type)
         //this.availableEntries.splice(search, 1)
       }
-      entries.push({ type: 'top', x: 200 + x, y: 200 + y - mapYOrigo });
+      entries.push({ type: 'top', x: this.mapRadius + x, y: this.mapRadius + y - mapYOrigo });
     }
     if (map.entryBottom) {
-      const search = this.entryFind('bottom', 200 + x, 200 + y - mapYOrigo + map.height - 1);
+      const search = this.entryFind('bottom', this.mapRadius + x, this.mapRadius + y - mapYOrigo + map.height - 1);
       if (search >= 0) {
-        this.coridorDraw(200 + x, 200 + y - mapYOrigo + map.height - 1, this.availableEntries[search].x, this.availableEntries[search].y, 'bottom', this.availableEntries[search].type)
+        this.coridorDraw(this.mapRadius + x, this.mapRadius + y - mapYOrigo + map.height - 1, this.availableEntries[search].x, this.availableEntries[search].y, 'bottom', this.availableEntries[search].type)
         //this.availableEntries.splice(search, 1)
       }
-      entries.push({ type: 'bottom', x: 200 + x, y: 200 + y - mapYOrigo + map.height - 1 });
+      entries.push({ type: 'bottom', x: this.mapRadius + x, y: this.mapRadius + y - mapYOrigo + map.height - 1 });
     }
     if (map.entryLeft) {
-      const search = this.entryFind('left', 200 + x - mapXOrigo, 200 + y);
+      const search = this.entryFind('left', this.mapRadius + x - mapXOrigo, this.mapRadius + y);
       if (search >= 0) {
-        this.coridorDraw(200 + x - mapXOrigo, 200 + y, this.availableEntries[search].x, this.availableEntries[search].y, 'left', this.availableEntries[search].type)
+        this.coridorDraw(this.mapRadius + x - mapXOrigo, this.mapRadius + y, this.availableEntries[search].x, this.availableEntries[search].y, 'left', this.availableEntries[search].type)
         //this.availableEntries.splice(search, 1)
       }
-      entries.push({ type: 'left', x: 200 + x - mapXOrigo, y: 200 + y });
+      entries.push({ type: 'left', x: this.mapRadius + x - mapXOrigo, y: this.mapRadius + y });
     }
     if (map.entryRight) {
-      const search = this.entryFind('right', 200 + x - mapXOrigo + map.width - 1, 200 + y);
+      const search = this.entryFind('right', this.mapRadius + x - mapXOrigo + map.width - 1, this.mapRadius + y);
       if (search >= 0) {
-        this.coridorDraw(200 + x - mapXOrigo + map.width - 1, 200 + y, this.availableEntries[search].x, this.availableEntries[search].y, 'right', this.availableEntries[search].type)
+        this.coridorDraw(this.mapRadius + x - mapXOrigo + map.width - 1, this.mapRadius + y, this.availableEntries[search].x, this.availableEntries[search].y, 'right', this.availableEntries[search].type)
         //this.availableEntries.splice(search, 1)
       }
-      entries.push({ type: 'right', x: 200 + x - mapXOrigo + map.width - 1, y: 200 + y });
+      entries.push({ type: 'right', x: this.mapRadius + x - mapXOrigo + map.width - 1, y: this.mapRadius + y });
     }
     this.availableEntries.push(...entries);
   }
