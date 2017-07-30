@@ -33,6 +33,14 @@ export function objectRemove(state, map, id) {
     .updateIn(['maps', map, 'objects'], o => o.delete(id));
 }
 
+export function objectSet(state, map, id, x, y, type, data) {
+  console.info(map, id, x, y, type, data);
+  return state
+    .updateIn(['maps', map, 'objects'], o => o.set(id, fromJS({
+      x, y, type, data
+    })));
+}
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
@@ -68,6 +76,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case 'MAP_OBJECT_REMOVE':
       return objectRemove(state, action.map, action.id)
+
+    case 'MAP_OBJECT_SET':
+      return objectSet(state, action.map, action.id, action.x, action.y, action.objectType, action.data)
 
     default:
       return state;
