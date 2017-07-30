@@ -50,7 +50,7 @@ class Generation extends React.Component {
           this.mapWrite(this.rooms[ind], newX, newY);
           success = true;
         } else {
-          this.generationRotation += 450 / (10 + this.generationDistance / 2) + Math.random() * 5;
+          this.generationRotation += 450 / (10 + this.generationDistance / 2);
           if (this.generationRotation >= 360) {
             this.generationRotation -= 360;
             this.generationDistance += 5;
